@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CCI Hesaplama - Sondaj</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        input[readonly] {
+            background-color: #0A0A0A !important;
+            border-color: #222222 !important;
+            color: #4DA8DA !important;
+            font-weight: 600;
+        }
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0px 0px rgba(255, 0, 0, 0.2); border-color: #aa0000; }
+            50% { box-shadow: 0 0 20px 5px rgba(255, 0, 0, 0.8); border-color: #ff3333; }
+            100% { box-shadow: 0 0 0px 0px rgba(255, 0, 0, 0.2); border-color: #aa0000; }
+        }
+        .alert-red { animation: pulse-red 0.8s infinite; border-style: solid !important; }
+
+        @keyframes pulse-yellow {
+            0% { box-shadow: 0 0 0px 0px rgba(255, 193, 7, 0.2); border-color: #b38800; }
+            50% { box-shadow: 0 0 15px 5px rgba(255, 193, 7, 0.7); border-color: #ffcc00; }
+            100% { box-shadow: 0 0 0px 0px rgba(255, 193, 7, 0.2); border-color: #b38800; }
+        }
+        .alert-yellow { animation: pulse-yellow 1.2s infinite; border-style: solid !important; }
+
+        @keyframes glow-green {
+            0% { box-shadow: 0 0 5px 0px rgba(76, 175, 80, 0.2); border-color: #2e7d32; }
+            50% { box-shadow: 0 0 20px 2px rgba(76, 175, 80, 0.6); border-color: #66bb6a; }
+            100% { box-shadow: 0 0 5px 0px rgba(76, 175, 80, 0.2); border-color: #2e7d32; }
+        }
+        .alert-green { animation: glow-green 2.5s infinite ease-in-out; border-style: solid !important; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>CCI Hesaplama</h1>
+            <p>Cutting Carrying Index Kuyu Temizliği</p>
+        </header>
+
+        <main>
+            <div class="info-box">
+                <strong>Bilgi:</strong> <b>Cutting Carrying Index (CCI)</b>, sondaj sıvısının kuyu içindeki kesintileri (kırıntıları) yüzeye taşıma kapasitesini değerlendiren kritik bir indekstir.
+            </div>
+
+            <!-- 1. AŞAMA -->
+            <div class="card" id="card-step1">
+                <h2>1. Aşama: Debi Hesabı (Q)</h2>
+                
+                <div class="input-group">
+                    <label>Liner (Gömlek) Çapı (L - inç)</label>
+                    <input type="text" inputmode="decimal" id="l_val" placeholder="Örn: 6,5" oninput="this.value = this.value.replace(/\./g, ',')">
+                </div>
+                <div class="input-group">
+                    <label>Stroke Uzunluğu (S - inç)</label>
+                    <input type="text" inputmode="decimal" id="s_val" placeholder="Örn: 12" oninput="this.value = this.value.replace(/\./g, ',')">
+                </div>
+                <div class="input-group">
+                    <label>Pompa Hızı (SPM - stroke/dk)</label>
+                    <input type="text" inputmode="decimal" id="spm_val" placeholder="Örn: 100" oninput="this.value = this.value.replace(/\./g, ',')">
+                </div>
+                <div class="input-group">
+                    <label>Pompa Verimliliği (E - %)</label>
+                    <input type="text" inputmode="decimal" id="e_val" placeholder="Örn: 97" oninput="this.value = this.value.replace(/\./g, ',')">
+                </div>
+
+                <button class="calc-btn" onclick="hesaplaAdim1()">1. AŞAMAYI HESAPLA</button>
+
+                <div class="result-box">
+                    Hesaplanan Debi (Q):
+                    <span id="res-q">0,00 gpm</span>
+                </div>
+            </div>
+
+            <!-- 2. AŞAMA -->
+            <div class="card disabled" id="card-step2">
+                <h2>2. Aşama: Anülüs Hızı</h2>
+                
+                <div class="input-group">
+                    <label>Sistem Debisi (Q - gpm)</label>
+                    <input type="text" id="q_auto" readonly placeholder="1. Aşamadan alınacak">
+                </div>
+                <div class="input-group">
+                    <label>Kuyu İç Çapı (A - inç)</label>
+                    <input type="text" inputmode="decimal" id="a_val" placeholder="Örn: 12,25" oninput="this.value = this.value.replace(/\./g, ',')">
+                </div>
+                <div class="input-group">
+                    <label>Dizi Dış Çapı (B - inç)</label>
+                    <input type="text" inputmode="decimal" id="b_val" placeholder="Örn: 5" oninput="this.value = this.value.replace(/\./g, ',')">
+                </div>
+
+                <button class="calc-btn" onclick="hesaplaAdim2()">2. AŞAMAYI HESAPLA</button>
+
+                <div class="result-box">
+                    Anülüs Hızı:
+                    <span id="res-av">0,00</span>
+                </div>
+            </div>
+
+            <!-- 3. AŞAMA -->
+            <div class="card disabled" id="card-step3">
+                <h2>3. Aşama: Reoloji & CCI</h2>
+                
+                <div class="input-group">
+                    <label>Çamur Ağırlığı (MW - pcf)</label>
+                    <input type="text" inputmode="decimal" id="mw_val" placeholder="Örn: 75,5" oninput="this.value = this.value.replace(/\./g, ',')">
+                </div>
+                <div class="input-group">
+                    <label>Viskometre 600 rpm (θ600)</label>
+                    <input type="text" inputmode="decimal" id="t600_val" placeholder="Örn: 65" oninput="this.value = this.value.replace(/\./g, ',')">
+                </div>
+                <div class="input-group">
+                    <label>Viskometre 300 rpm (θ300)</label>
+                    <input type="text" inputmode="decimal" id="t300_val" placeholder="Örn: 42" oninput="this.value = this.value.replace(/\./g, ',')">
+                </div>
+                <div class="input-group">
+                    <label>Viskometre 3 rpm (θ3)</label>
+                    <input type="text" inputmode="decimal" id="t3_val" placeholder="Örn: 6" oninput="this.value = this.value.replace(/\./g, ',')">
+                </div>
+
+                <button class="calc-btn" onclick="hesaplaAdim3()">NİHAİ CCI HESAPLA</button>
+
+                <div class="result-box" id="final-result-box">
+                    <div style="font-size: 14px; color: #888; margin-bottom: 5px;">Consistency Index (K): <b id="res-k" style="color: #ccc;">-</b></div>
+                    <div style="font-size: 16px; margin-top: 15px;">Kuyu Temizliği Endeksi (CCI):</div>
+                    <span id="res-cci" style="font-size: 32px; margin-top: 5px;">0,000</span>
+                </div>
+            </div>
+
+            <a href="index.html" style="color: #888888; text-decoration: none; font-size: 14px; display: block; text-align: center; margin-top: 20px; margin-bottom: 40px;">← Ana Menüye Dön</a>
+        </main>
+    </div>
+
+    <script>
+        let global_Q = 0;
+        let global_AV = 0;
+
+        function hesaplaAdim1() {
+            let L = parseFloat(document.getElementById('l_val').value.replace(',', '.'));
+            let S = parseFloat(document.getElementById('s_val').value.replace(',', '.'));
+            let SPM = parseFloat(document.getElementById('spm_val').value.replace(',', '.'));
+            let E = parseFloat(document.getElementById('e_val').value.replace(',', '.'));
+
+            if (isNaN(L) || isNaN(S) || isNaN(SPM) || isNaN(E)) {
+                alert("Lütfen 1. aşamadaki tüm değerleri giriniz.");
+                return;
+            }
+
+            let verim = (E > 1) ? (E / 100) : E;
+            global_Q = (L * L) * S * 0.0102 * SPM * verim;
+
+            // Sonuçları virgülle göster
+            document.getElementById('res-q').innerText = global_Q.toFixed(2).replace('.', ',') + " gpm";
+            document.getElementById('q_auto').value = global_Q.toFixed(2).replace('.', ',');
+
+            let step2 = document.getElementById('card-step2');
+            step2.classList.remove('disabled');
+            step2.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function hesaplaAdim2() {
+            let A = parseFloat(document.getElementById('a_val').value.replace(',', '.'));
+            let B = parseFloat(document.getElementById('b_val').value.replace(',', '.'));
+
+            if (isNaN(A) || isNaN(B)) {
+                alert("Lütfen 2. aşamadaki Kuyu Çapı ve Dizi Çapı değerlerini giriniz.");
+                return;
+            }
+
+            if (B >= A) {
+                alert("Hata: Kuyu çapı (A), dizi dış çapından (B) büyük olmalıdır!");
+                return;
+            }
+
+            global_AV = (24.5 * global_Q) / ((A * A) - (B * B));
+            document.getElementById('res-av').innerText = global_AV.toFixed(2).replace('.', ',');
+
+            let step3 = document.getElementById('card-step3');
+            step3.classList.remove('disabled');
+            step3.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function hesaplaAdim3() {
+            let MW = parseFloat(document.getElementById('mw_val').value.replace(',', '.'));
+            let t600 = parseFloat(document.getElementById('t600_val').value.replace(',', '.'));
+            let t300 = parseFloat(document.getElementById('t300_val').value.replace(',', '.'));
+            let t3 = parseFloat(document.getElementById('t3_val').value.replace(',', '.'));
+
+            if (isNaN(MW) || isNaN(t600) || isNaN(t300) || isNaN(t3)) {
+                alert("Lütfen 3. aşamadaki Çamur Ağırlığı ve Viskometre değerlerini tam giriniz.");
+                return;
+            }
+
+            let Ty = 1.068 * t3;
+            let n_pay = t600 - Ty;
+            let n_payda = t300 - Ty;
+            
+            if(n_pay <= 0 || n_payda <= 0) {
+                alert("Hata: Mantıksız viskometre okumaları!");
+                return;
+            }
+
+            let n = 3.32 * Math.log10(n_pay / n_payda);
+            let K = (1.068 * n_payda) / Math.pow(511, n);
+            let CCI = (global_AV * MW * K) / (400000 * 7.48);
+
+            document.getElementById('res-k').innerText = K.toFixed(4).replace('.', ',');
+            document.getElementById('res-cci').innerText = CCI.toFixed(4).replace('.', ',');
+
+            let finalBox = document.getElementById('final-result-box');
+            let cciText = document.getElementById('res-cci');
+            
+            finalBox.classList.remove('alert-red', 'alert-yellow', 'alert-green');
+
+            if (CCI <= 0.5) {
+                finalBox.classList.add('alert-red');
+                cciText.style.color = "#ff3333";
+            } else if (CCI > 0.5 && CCI < 1.0) {
+                finalBox.classList.add('alert-yellow');
+                cciText.style.color = "#ffcc00";
+            } else {
+                finalBox.classList.add('alert-green');
+                cciText.style.color = "#66bb6a";
+            }
+        }
+    </script>
+</body>
+</html>

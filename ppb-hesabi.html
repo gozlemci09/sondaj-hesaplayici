@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ppb Hesabı - Sondaj</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>ppb Hesabı</h1>
+            <p>Konsantrasyon ve Miktar Analizi</p>
+        </header>
+
+        <main>
+            <div class="info-box">
+                <strong>Bilgi:</strong> <b>ppb (pounds per barrel)</b>, sondaj akışkanlarında (çamur) kullanılan kimyasal katkı maddelerinin konsantrasyonunu ifade etmek için kullanılan temel ölçü birimidir.
+            </div>
+
+            <div class="card">
+                <h2>1. Gerekli Kimyasal Miktarı (kg)</h2>
+                
+                <div class="input-group">
+                    <label for="ppb1">Konsantrasyon (ppb)</label>
+                    <input type="text" inputmode="decimal" id="ppb1" placeholder="Örn: 2,5" oninput="this.value = this.value.replace(/\./g, ',')">
+                </div>
+
+                <div class="input-group">
+                    <label for="vol1">Çamur Hacmi (V - bbl)</label>
+                    <input type="text" inputmode="decimal" id="vol1" placeholder="Örn: 500" oninput="this.value = this.value.replace(/\./g, ',')">
+                </div>
+
+                <button class="calc-btn" onclick="hesaplaMiktar()">MİKTARI HESAPLA</button>
+
+                <div class="result-box">
+                    Toplam Gereken Kimyasal:
+                    <span id="sonuc-miktar">0,00 kg</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>2. Konsantrasyon (ppb) Hesaplama</h2>
+                
+                <div class="input-group">
+                    <label for="kg2">Kullanılan Kimyasal (kg)</label>
+                    <input type="text" inputmode="decimal" id="kg2" placeholder="Örn: 450,5" oninput="this.value = this.value.replace(/\./g, ',')">
+                </div>
+
+                <div class="input-group">
+                    <label for="vol2">Çamur Hacmi (V - bbl)</label>
+                    <input type="text" inputmode="decimal" id="vol2" placeholder="Örn: 500" oninput="this.value = this.value.replace(/\./g, ',')">
+                </div>
+
+                <button class="calc-btn" onclick="hesaplaKonsantrasyon()">KONSANTRASYONU HESAPLA</button>
+
+                <div class="result-box">
+                    Sistemdeki Konsantrasyon:
+                    <span id="sonuc-konsantrasyon">0,00 ppb</span>
+                </div>
+            </div>
+
+            <a href="index.html" style="color: #888888; text-decoration: none; font-size: 14px; display: block; text-align: center; margin-top: 20px; margin-bottom: 40px;">← Ana Menüye Dön</a>
+        </main>
+    </div>
+
+    <script>
+        function hesaplaMiktar() {
+            let ppb = parseFloat(document.getElementById('ppb1').value.replace(',', '.'));
+            let vol = parseFloat(document.getElementById('vol1').value.replace(',', '.'));
+
+            if (isNaN(ppb) || isNaN(vol)) {
+                document.getElementById('sonuc-miktar').innerText = "Değer Giriniz";
+                return;
+            }
+
+            let sonuc = ppb * vol * 0.4536;
+            document.getElementById('sonuc-miktar').innerText = sonuc.toFixed(2).replace('.', ',') + " kg";
+        }
+
+        function hesaplaKonsantrasyon() {
+            let kg = parseFloat(document.getElementById('kg2').value.replace(',', '.'));
+            let vol = parseFloat(document.getElementById('vol2').value.replace(',', '.'));
+
+            if (isNaN(kg) || isNaN(vol)) {
+                document.getElementById('sonuc-konsantrasyon').innerText = "Değer Giriniz";
+                return;
+            }
+            if (vol === 0) {
+                document.getElementById('sonuc-konsantrasyon').innerText = "Hata: Hacim 0 olamaz";
+                return;
+            }
+
+            let payda = vol * 0.4536;
+            let sonuc = kg / payda;
+            document.getElementById('sonuc-konsantrasyon').innerText = sonuc.toFixed(2).replace('.', ',') + " ppb";
+        }
+    </script>
+</body>
+</html>

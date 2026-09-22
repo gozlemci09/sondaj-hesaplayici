@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Pompa Stroke Hacmi - Sondaj</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Pompa Hacmi (bbl)</h1>
+            <p>1 Stroke'da Basılan Çamur Hesabı</p>
+        </header>
+
+        <main>
+            <div class="info-box">
+                <strong>Bilgi:</strong> Çamur pompaları sondaj akışkan sirkülasyon sisteminin kalbidir. Pompalanan hacim; gömlek (liner) çapı, stroke uzunluğu ve pompanın volumetrik verimliliğine bağlıdır.
+            </div>
+
+            <div class="card">
+                <div class="input-group">
+                    <label for="d">Gömlek (Liner) Çapı (D - inç)</label>
+                    <input type="text" inputmode="decimal" id="d" placeholder="Örn: 6,5" oninput="this.value = this.value.replace(/\./g, ',')">
+                </div>
+
+                <div class="input-group">
+                    <label for="s">Stroke Uzunluğu (S - inç)</label>
+                    <input type="text" inputmode="decimal" id="s" placeholder="Örn: 12" oninput="this.value = this.value.replace(/\./g, ',')">
+                </div>
+
+                <div class="input-group">
+                    <label for="e">Pompa Verimliliği (E - %)</label>
+                    <input type="text" inputmode="decimal" id="e" placeholder="Örn: 97" oninput="this.value = this.value.replace(/\./g, ',')">
+                </div>
+
+                <button class="calc-btn" onclick="hesaplaPompa()">HESAPLA</button>
+
+                <div class="result-box">
+                    1 Stroke'da Basılan Hacim:
+                    <span id="sonuc-metni">0,0000 bbl</span>
+                </div>
+            </div>
+
+            <a href="index.html" style="color: #888888; text-decoration: none; font-size: 14px; display: block; text-align: center; margin-top: 20px;">← Ana Menüye Dön</a>
+        </main>
+    </div>
+
+    <script>
+        function hesaplaPompa() {
+            let d = parseFloat(document.getElementById('d').value.replace(',', '.'));
+            let s = parseFloat(document.getElementById('s').value.replace(',', '.'));
+            let e = parseFloat(document.getElementById('e').value.replace(',', '.'));
+
+            if (isNaN(d) || isNaN(s) || isNaN(e)) {
+                document.getElementById('sonuc-metni').innerText = "Değer Giriniz";
+                return;
+            }
+
+            let verim = (e > 1) ? (e / 100) : e;
+            let sonuc = 0.000243 * (d * d) * s * verim;
+
+            document.getElementById('sonuc-metni').innerText = sonuc.toFixed(4).replace('.', ',') + " bbl";
+        }
+    </script>
+</body>
+</html>

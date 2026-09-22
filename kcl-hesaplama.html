@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>KCl Ağırlaştırma - Sondaj</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>KCl (pcf)</h1>
+            <p>Ağırlaştırma Hesaplaması</p>
+        </header>
+
+        <main>
+            <div class="info-box">
+                <strong>Bilgi:</strong> KCl (Potasyum Klorür), özellikle reaktif şeyl formasyonlarında kil şişmesini (inhibition) önlemek ve kuyu stabilitesini artırmak için sondaj akışkanlarında yaygın olarak kullanılır.
+            </div>
+
+            <div class="card">
+                <div class="input-group">
+                    <label for="w1">Başlangıç Ağırlığı (W1 - pcf)</label>
+                    <input type="text" inputmode="decimal" id="w1" placeholder="Örn: 70,5" oninput="this.value = this.value.replace(/\./g, ',')">
+                </div>
+
+                <div class="input-group">
+                    <label for="w2">İstenen Ağırlık (W2 - pcf)</label>
+                    <input type="text" inputmode="decimal" id="w2" placeholder="Örn: 75" oninput="this.value = this.value.replace(/\./g, ',')">
+                </div>
+
+                <div class="input-group">
+                    <label for="v">İstenen Hacim (V - bbl)</label>
+                    <input type="text" inputmode="decimal" id="v" placeholder="Örn: 100" oninput="this.value = this.value.replace(/\./g, ',')">
+                </div>
+
+                <button class="calc-btn" onclick="kclHesapla()">HESAPLA</button>
+
+                <div class="result-box">
+                    Gereken Toplam KCl (kg):
+                    <span id="sonuc-metni">0,00 kg</span>
+                </div>
+            </div>
+
+            <a href="index.html" style="color: #888888; text-decoration: none; font-size: 14px; display: block; text-align: center; margin-top: 20px;">← Ana Menüye Dön</a>
+        </main>
+    </div>
+
+    <script>
+        function kclHesapla() {
+            let w1 = parseFloat(document.getElementById('w1').value.replace(',', '.'));
+            let w2 = parseFloat(document.getElementById('w2').value.replace(',', '.'));
+            let v = parseFloat(document.getElementById('v').value.replace(',', '.'));
+
+            if (isNaN(w1) || isNaN(w2) || isNaN(v)) {
+                document.getElementById('sonuc-metni').innerText = "Değer Giriniz";
+                return;
+            }
+
+            if (w2 >= 123.55) {
+                document.getElementById('sonuc-metni').innerText = "Hata: W2 > 123,55";
+                return;
+            }
+
+            let pay = 314.6 * (w2 - w1);
+            let payda = 123.55 - w2;
+            let sonuc = (pay / payda) * v;
+
+            document.getElementById('sonuc-metni').innerText = sonuc.toFixed(2).replace('.', ',') + " kg";
+        }
+    </script>
+</body>
+</html>

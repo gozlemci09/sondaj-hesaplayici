@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CaCO3 Ağırlaştırma - Sondaj</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>CaCO₃ (Kalsiyum Karbonat)</h1>
+            <p>Çamur Ağırlaştırma Hesabı</p>
+        </header>
+
+        <main>
+            <!-- Bilgi Kutusu -->
+            <div class="info-box">
+                <strong>Bilgi:</strong> Kalsiyum Karbonat (CaCO₃), özellikle üretim zonlarında rezervuar hasarını (formation damage) önlemek amacıyla kullanılır. Asitte çözünebilir (acid-soluble) özelliği sayesinde sondaj sonrası kuyu temizliğinde avantaj sağlar. Formasyon basıncını kontrol altında tutmak için akışkanın ağırlaştırılması gerektiği durumlarda barite alternatif olarak sıkça tercih edilir.
+            </div>
+
+            <!-- Hesaplama Kartı -->
+            <div class="card">
+                
+                <div class="input-group">
+                    <label for="w1">Başlangıç Ağırlığı (W1 - pcf)</label>
+                    <input type="text" inputmode="decimal" id="w1" placeholder="Örn: 72,5" oninput="this.value = this.value.replace(/\./g, ',')">
+                </div>
+
+                <div class="input-group">
+                    <label for="w2">Hedef Ağırlık (W2 - pcf)</label>
+                    <input type="text" inputmode="decimal" id="w2" placeholder="Örn: 76,0" oninput="this.value = this.value.replace(/\./g, ',')">
+                </div>
+
+                <div class="input-group">
+                    <label for="v">Çamur Hacmi (V - bbl)</label>
+                    <input type="text" inputmode="decimal" id="v" placeholder="Örn: 350" oninput="this.value = this.value.replace(/\./g, ',')">
+                </div>
+
+                <button class="calc-btn" onclick="hesaplaCaCO3()">HESAPLA</button>
+
+                <div class="result-box">
+                    Kullanılması Gereken CaCO₃:
+                    <span id="sonuc-metni">0,00 kg</span>
+                </div>
+
+            </div>
+
+            <!-- Ana Menüye Dönüş -->
+            <a href="index.html" style="color: #888888; text-decoration: none; font-size: 14px; display: block; text-align: center; margin-top: 20px; margin-bottom: 40px;">← Ana Menüye Dön</a>
+        </main>
+    </div>
+
+    <script>
+        function hesaplaCaCO3() {
+            // Girilen değerlerdeki virgülleri bilgisayarın hesaplayabilmesi için geçici olarak noktaya çeviriyoruz
+            let w1 = parseFloat(document.getElementById('w1').value.replace(',', '.'));
+            let w2 = parseFloat(document.getElementById('w2').value.replace(',', '.'));
+            let v = parseFloat(document.getElementById('v').value.replace(',', '.'));
+
+            if (isNaN(w1) || isNaN(w2) || isNaN(v)) {
+                document.getElementById('sonuc-metni').innerText = "Değer Giriniz";
+                return;
+            }
+
+            // Paydanın (168.48 - W2) sıfır veya negatif olmasını engellemek için güvenlik kontrolü
+            if (w2 >= 168.48) {
+                document.getElementById('sonuc-metni').innerText = "Hata: W2 > 168,48";
+                return;
+            }
+
+            // Formül: [429.1 x (W2 - W1)] / [168.48 - W2] x V
+            let pay = 429.1 * (w2 - w1);
+            let payda = 168.48 - w2;
+            let sonuc = (pay / payda) * v;
+
+            // Çıkan sonucu tekrar virgüllü formata çevirerek ekrana yazdırıyoruz
+            document.getElementById('sonuc-metni').innerText = sonuc.toFixed(2).replace('.', ',') + " kg";
+        }
+    </script>
+</body>
+</html>
