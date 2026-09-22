@@ -125,7 +125,7 @@
                 <button class="calc-btn" onclick="hesaplaAdim3()">NİHAİ CCI HESAPLA</button>
 
                 <div class="result-box" id="final-result-box">
-                    <div style="font-size: 14px; color: #888; margin-bottom: 5px;">Consistency Index (K): <b id="res-k" style="color: #ccc;">-</b></div>
+                    <div style="font-size: 14px; color: #888; margin-bottom: 5px;">Consistency Index (K - eq.cP): <b id="res-k" style="color: #ccc;">-</b></div>
                     <div style="font-size: 16px; margin-top: 15px;">Kuyu Temizliği Endeksi (CCI):</div>
                     <span id="res-cci" style="font-size: 32px; margin-top: 5px;">0,000</span>
                 </div>
@@ -153,7 +153,6 @@
             let verim = (E > 1) ? (E / 100) : E;
             global_Q = (L * L) * S * 0.0102 * SPM * verim;
 
-            // Sonuçları virgülle göster
             document.getElementById('res-q').innerText = global_Q.toFixed(2).replace('.', ',') + " gpm";
             document.getElementById('q_auto').value = global_Q.toFixed(2).replace('.', ',');
 
@@ -195,9 +194,8 @@
                 return;
             }
 
-            let Ty = 1.068 * t3;
-            let n_pay = t600 - Ty;
-            let n_payda = t300 - Ty;
+            let n_pay = t600 - t3;
+            let n_payda = t300 - t3;
             
             if(n_pay <= 0 || n_payda <= 0) {
                 alert("Hata: Mantıksız viskometre okumaları!");
@@ -205,11 +203,15 @@
             }
 
             let n = 3.32 * Math.log10(n_pay / n_payda);
-            let K = (1.068 * n_payda) / Math.pow(511, n);
+            
+            // DÜZELTİLEN KISIM: 400.000'lik CCI böleni K'nın eq.cP cinsinden olmasını gerektirir.
+            // Bu yüzden 1.068 sabiti yerine 511 sabiti kullanılmalıdır.
+            let K = (511 * n_payda) / Math.pow(511, n);
+            
             let CCI = (global_AV * MW * K) / (400000 * 7.48);
 
-            document.getElementById('res-k').innerText = K.toFixed(4).replace('.', ',');
-            document.getElementById('res-cci').innerText = CCI.toFixed(4).replace('.', ',');
+            document.getElementById('res-k').innerText = K.toFixed(2).replace('.', ',');
+            document.getElementById('res-cci').innerText = CCI.toFixed(3).replace('.', ',');
 
             let finalBox = document.getElementById('final-result-box');
             let cciText = document.getElementById('res-cci');
