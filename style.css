@@ -1,167 +1,28 @@
-/* --- GENEL AYARLAR VE SİYAH TEMA --- */
-* {
-    box-sizing: border-box; /* Kutu boyutlarını ekran dışına taşırmaz */
-    -webkit-tap-highlight-color: transparent; /* Mobilde butona basınca çıkan mavi parlamayı engeller */
-}
-
-body {
-    background-color: #000000; /* Zifiri siyah arka plan */
-    color: #E0E0E0; /* Göz yormayan gri metinler */
-    font-family: 'Inter', sans-serif;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center; /* Sayfayı ortalar */
-    min-height: 100vh;
-}
-
-.container {
-    width: 100%;
-    max-width: 450px; /* Telefon ekranı hissi (Bilgisayarda bile dar görünür) */
-    padding: 20px;
-}
-
-/* --- BAŞLIK BÖLÜMÜ --- */
-header {
-    text-align: center;
-    margin-top: 40px;
-    margin-bottom: 40px;
-}
-
-h1 {
-    font-weight: 600;
-    font-size: 28px;
-    color: #FFFFFF;
-    margin-bottom: 8px;
-    letter-spacing: -0.5px;
-}
-
-header p {
-    font-weight: 300;
-    font-size: 14px;
-    color: #888888;
-    margin-top: 0;
-}
-
-/* --- ANA MENÜ BUTONLARI --- */
-.menu-button {
-    display: block;
-    background-color: #121212; /* Koyu antrasit */
-    border: 1px solid #222222; /* Çok ince sınır çizgisi */
-    border-radius: 16px;
-    padding: 24px;
-    margin-bottom: 20px;
-    text-decoration: none; /* Link alt çizgisini kaldırır */
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); /* Hafif derinlik */
-    transition: transform 0.1s ease, border-color 0.2s ease;
-}
-
-.menu-button h2 {
-    font-size: 18px;
-    font-weight: 600;
-    color: #4DA8DA; /* Modern mavi vurgu */
-    margin-top: 0;
-    margin-bottom: 12px;
-}
-
-.menu-button p {
-    font-size: 14px;
-    font-weight: 300;
-    line-height: 1.5;
-    color: #AAAAAA;
-    margin: 0;
-}
-
-.menu-button:active {
-    transform: scale(0.97); /* Dokunulduğunda hafifçe içe çökme efekti */
-    border-color: #4DA8DA;
-}
-
-.disabled {
-    opacity: 0.5;
-    pointer-events: none; /* Tıklanamaz yapar */
-}
-
-/* --- HESAPLAMA SAYFALARI (ALT SAYFALAR) İÇİN STİLLER --- */
-
-.info-box {
-    background-color: rgba(77, 168, 218, 0.1);
-    border-left: 4px solid #4DA8DA;
+/* --- MANUEL HESAPLAMA FORMÜL KUTUSU --- */
+.formula-box {
+    background-color: #0A0A0A;
+    border: 1px solid #333333;
+    border-radius: 8px;
     padding: 16px;
-    border-radius: 0 8px 8px 0;
     margin-bottom: 24px;
     font-size: 13px;
-    line-height: 1.5;
-    color: #CCCCCC;
+    line-height: 1.6;
+    color: #BBBBBB;
 }
-
-.card {
-    background-color: #121212;
-    border: 1px solid #222222;
-    border-radius: 16px;
-    padding: 24px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-}
-
-.input-group {
-    margin-bottom: 20px;
-}
-
-.input-group label {
-    display: block;
+.formula-box strong {
+    color: #E0E0E0;
     font-size: 14px;
-    color: #AAAAAA;
-    margin-bottom: 8px;
 }
-
-.input-group input {
-    width: 100%;
-    padding: 16px;
-    background-color: #1A1A1A;
-    border: 1px solid #333333;
-    border-radius: 12px;
-    color: #FFFFFF;
-    font-size: 16px; /* 16px telefon klavyesinde otomatik yakınlaştırmayı önler */
-    font-family: 'Inter', sans-serif;
-}
-
-.input-group input:focus {
-    outline: none;
-    border-color: #4DA8DA;
-}
-
-.calc-btn {
-    width: 100%;
-    padding: 16px;
-    background-color: #4DA8DA;
-    color: #000000;
-    border: none;
-    border-radius: 12px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    margin-top: 10px;
-    font-family: 'Inter', sans-serif;
-    transition: background-color 0.2s;
-}
-
-.calc-btn:active {
-    background-color: #3b8bb8;
-}
-
-.result-box {
-    margin-top: 24px;
-    padding: 20px;
-    background-color: #0A0A0A;
-    border: 1px dashed #4DA8DA;
-    border-radius: 12px;
-    text-align: center;
-}
-
-.result-box span {
+.formula-box .formula {
     display: block;
-    font-size: 26px;
-    font-weight: 600;
+    background-color: #121212;
+    border: 1px dashed #4DA8DA;
     color: #4DA8DA;
-    margin-top: 8px;
+    padding: 10px;
+    margin: 12px 0;
+    border-radius: 6px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.5px;
 }
