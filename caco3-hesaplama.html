@@ -15,14 +15,21 @@
         </header>
 
         <main>
-            <!-- Bilgi Kutusu -->
             <div class="info-box">
-                <strong>Bilgi:</strong> Kalsiyum Karbonat (CaCO₃), özellikle üretim zonlarında rezervuar hasarını (formation damage) önlemek amacıyla kullanılır. Asitte çözünebilir (acid-soluble) özelliği sayesinde sondaj sonrası kuyu temizliğinde avantaj sağlar. Formasyon basıncını kontrol altında tutmak için akışkanın ağırlaştırılması gerektiği durumlarda barite alternatif olarak sıkça tercih edilir.
+                <strong>Bilgi:</strong> Kalsiyum Karbonat (CaCO₃), özellikle üretim zonlarında rezervuar hasarını (formation damage) önlemek amacıyla kullanılır. Asitte çözünebilir özelliği sayesinde sondaj sonrası kuyu temizliğinde avantaj sağlar.
             </div>
 
-            <!-- Hesaplama Kartı -->
+            <!-- Yeni Formül Kutusu -->
+            <div class="formula-box">
+                <strong>Manuel Hesaplama Formülü:</strong>
+                <span class="formula">CaCO₃ (kg) = [429,1 x (W2 - W1)] / (168,48 - W2) x V</span>
+                <strong>Değişkenler:</strong><br>
+                • <b>W1:</b> Başlangıç Ağırlığı (pcf)<br>
+                • <b>W2:</b> Hedef Ağırlık (pcf)<br>
+                • <b>V:</b> Çamur Hacmi (bbl)
+            </div>
+
             <div class="card">
-                
                 <div class="input-group">
                     <label for="w1">Başlangıç Ağırlığı (W1 - pcf)</label>
                     <input type="text" inputmode="decimal" id="w1" placeholder="Örn: 72,5" oninput="this.value = this.value.replace(/\./g, ',')">
@@ -34,6 +41,47 @@
                 </div>
 
                 <div class="input-group">
+                    <label for="v">Çamur Hacmi (V - bbl)</label>
+                    <input type="text" inputmode="decimal" id="v" placeholder="Örn: 350" oninput="this.value = this.value.replace(/\./g, ',')">
+                </div>
+
+                <button class="calc-btn" onclick="hesaplaCaCO3()">HESAPLA</button>
+
+                <div class="result-box">
+                    Kullanılması Gereken CaCO₃:
+                    <span id="sonuc-metni">0,00 kg</span>
+                </div>
+            </div>
+
+            <a href="index.html" style="color: #888888; text-decoration: none; font-size: 14px; display: block; text-align: center; margin-top: 20px; margin-bottom: 40px;">← Ana Menüye Dön</a>
+        </main>
+    </div>
+
+    <script>
+        function hesaplaCaCO3() {
+            let w1 = parseFloat(document.getElementById('w1').value.replace(',', '.'));
+            let w2 = parseFloat(document.getElementById('w2').value.replace(',', '.'));
+            let v = parseFloat(document.getElementById('v').value.replace(',', '.'));
+
+            if (isNaN(w1) || isNaN(w2) || isNaN(v)) {
+                document.getElementById('sonuc-metni').innerText = "Değer Giriniz";
+                return;
+            }
+
+            if (w2 >= 168.48) {
+                document.getElementById('sonuc-metni').innerText = "Hata: W2 > 168,48";
+                return;
+            }
+
+            let pay = 429.1 * (w2 - w1);
+            let payda = 168.48 - w2;
+            let sonuc = (pay / payda) * v;
+
+            document.getElementById('sonuc-metni').innerText = sonuc.toFixed(2).replace('.', ',') + " kg";
+        }
+    </script>
+</body>
+</html>
                     <label for="v">Çamur Hacmi (V - bbl)</label>
                     <input type="text" inputmode="decimal" id="v" placeholder="Örn: 350" oninput="this.value = this.value.replace(/\./g, ',')">
                 </div>
