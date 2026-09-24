@@ -47,6 +47,17 @@
                 <strong>Bilgi:</strong> <b>Cutting Carrying Index (CCI)</b>, sondaj sıvısının kuyu içindeki kesintileri (kırıntıları) yüzeye taşıma kapasitesini değerlendiren kritik bir indekstir.
             </div>
 
+            <!-- Yeni Formül Kutusu -->
+            <div class="formula-box">
+                <strong>Manuel Hesaplama Adımları:</strong>
+                <span class="formula">1) Q (gpm) = L² x S x 0,0102 x SPM x E</span>
+                <span class="formula">2) Anülüs Hızı (AV) = (24,5 x Q) / (A² - B²)</span>
+                <span class="formula">3) n = 3,32 x log[(θ600 - θ3) / (θ300 - θ3)]</span>
+                <span class="formula">4) K = [511 x (θ300 - θ3)] / 511ⁿ</span>
+                <span class="formula">5) CCI = (AV x MW x K) / (400.000 x 7,48)</span>
+                <strong>Not:</strong> Logaritma işlemi 10 tabanındadır. Verimlilik (E) hesaplamaya ondalık olarak dahil edilir (örn: %95 = 0,95).
+            </div>
+
             <!-- 1. AŞAMA -->
             <div class="card" id="card-step1">
                 <h2>1. Aşama: Debi Hesabı (Q)</h2>
@@ -65,7 +76,7 @@
                 </div>
                 <div class="input-group">
                     <label>Pompa Verimliliği (E - %)</label>
-                    <input type="text" inputmode="decimal" id="e_val" placeholder="Örn: 97" oninput="this.value = this.value.replace(/\./g, ',')">
+                    <input type="text" inputmode="decimal" id="e_val" placeholder="Örn: 95" oninput="this.value = this.value.replace(/\./g, ',')">
                 </div>
 
                 <button class="calc-btn" onclick="hesaplaAdim1()">1. AŞAMAYI HESAPLA</button>
@@ -107,15 +118,15 @@
                 
                 <div class="input-group">
                     <label>Çamur Ağırlığı (MW - pcf)</label>
-                    <input type="text" inputmode="decimal" id="mw_val" placeholder="Örn: 75,5" oninput="this.value = this.value.replace(/\./g, ',')">
+                    <input type="text" inputmode="decimal" id="mw_val" placeholder="Örn: 78,5" oninput="this.value = this.value.replace(/\./g, ',')">
                 </div>
                 <div class="input-group">
                     <label>Viskometre 600 rpm (θ600)</label>
-                    <input type="text" inputmode="decimal" id="t600_val" placeholder="Örn: 65" oninput="this.value = this.value.replace(/\./g, ',')">
+                    <input type="text" inputmode="decimal" id="t600_val" placeholder="Örn: 55" oninput="this.value = this.value.replace(/\./g, ',')">
                 </div>
                 <div class="input-group">
                     <label>Viskometre 300 rpm (θ300)</label>
-                    <input type="text" inputmode="decimal" id="t300_val" placeholder="Örn: 42" oninput="this.value = this.value.replace(/\./g, ',')">
+                    <input type="text" inputmode="decimal" id="t300_val" placeholder="Örn: 40" oninput="this.value = this.value.replace(/\./g, ',')">
                 </div>
                 <div class="input-group">
                     <label>Viskometre 3 rpm (θ3)</label>
@@ -203,11 +214,7 @@
             }
 
             let n = 3.32 * Math.log10(n_pay / n_payda);
-            
-            // DÜZELTİLEN KISIM: 400.000'lik CCI böleni K'nın eq.cP cinsinden olmasını gerektirir.
-            // Bu yüzden 1.068 sabiti yerine 511 sabiti kullanılmalıdır.
             let K = (511 * n_payda) / Math.pow(511, n);
-            
             let CCI = (global_AV * MW * K) / (400000 * 7.48);
 
             document.getElementById('res-k').innerText = K.toFixed(2).replace('.', ',');
