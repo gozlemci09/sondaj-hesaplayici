@@ -19,6 +19,16 @@
                 <strong>Bilgi:</strong> Çamur pompaları sondaj akışkan sirkülasyon sisteminin kalbidir. Pompalanan hacim; gömlek (liner) çapı, stroke uzunluğu ve pompanın volumetrik verimliliğine bağlıdır.
             </div>
 
+            <!-- Yeni Formül Kutusu -->
+            <div class="formula-box">
+                <strong>Manuel Hesaplama Formülü:</strong>
+                <span class="formula">Hacim (bbl/stk) = 0,000243 x D² x S x E</span>
+                <strong>Değişkenler:</strong><br>
+                • <b>D:</b> Gömlek (Liner) Çapı (inç)<br>
+                • <b>S:</b> Stroke Uzunluğu (inç)<br>
+                • <b>E:</b> Pompa Verimliliği (Ondalık, örn: 0,95)
+            </div>
+
             <div class="card">
                 <div class="input-group">
                     <label for="d">Gömlek (Liner) Çapı (D - inç)</label>
@@ -32,7 +42,7 @@
 
                 <div class="input-group">
                     <label for="e">Pompa Verimliliği (E - %)</label>
-                    <input type="text" inputmode="decimal" id="e" placeholder="Örn: 97" oninput="this.value = this.value.replace(/\./g, ',')">
+                    <input type="text" inputmode="decimal" id="e" placeholder="Örn: 95" oninput="this.value = this.value.replace(/\./g, ',')">
                 </div>
 
                 <button class="calc-btn" onclick="hesaplaPompa()">HESAPLA</button>
