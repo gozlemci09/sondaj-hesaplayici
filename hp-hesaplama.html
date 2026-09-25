@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Hidrostatik Basınç - Sondaj</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Hidrostatik Basınç (HP)</h1>
+            <p>Durgun Akışkan Basıncı Hesabı</p>
+        </header>
+
+        <main>
+            <!-- Bilgi Kutusu -->
+            <div class="info-box">
+                <strong>Bilgi:</strong> <b>Hidrostatik Basınç</b>, kuyu içindeki durgun sondaj akışkanının (çamurun) kendi ağırlığı nedeniyle belirli bir derinliğe (genellikle kuyu tabanına) uyguladığı basınçtır. Formasyon basıncının dengelenmesi (kuyu kontrolü) (kick veya blowout olaylarının önlenmesi) için en temel parametredir.
+            </div>
+
+            <!-- Manuel Hesaplama Formül Kutusu -->
+            <div class="formula-box">
+                <strong>Manuel Hesaplama Formülü:</strong>
+                <span class="formula">HP (psi) = 0,052 x [MW / 7,48] x TWD</span>
+                <strong>Değişkenler:</strong><br>
+                • <b>MW:</b> Çamur Ağırlığı (pcf)<br>
+                • <b>TWD:</b> Gerçek Dikey Derinlik (ft)<br><br>
+                <strong style="color: #4DA8DA;">💡 Derinlik Dönüşüm Notu:</strong><br>
+                Formüldeki TWD değeri her zaman <b>feet (ft)</b> cinsinden olmalıdır. Eğer derinlik veriniz metre (m) cinsindense, formüle koymadan önce metreyi <b>3,281</b> ile çarparak feet'e dönüştürmelisiniz.<br>
+                <i>(Örn: 1000 metre = 3281 feet)</i>
+            </div>
+
+            <!-- Hesaplama Kartı -->
+            <div class="card">
+                
+                <div class="input-group">
+                    <label for="mw">Çamur Ağırlığı (MW - pcf)</label>
+                    <input type="text" inputmode="decimal" id="mw" placeholder="Örn: 75,5" oninput="this.value = this.value.replace(/\./g, ',')">
+                </div>
+
+                <div class="input-group">
+                    <label for="twd">Gerçek Dikey Derinlik (TWD - feet)</label>
+                    <input type="text" inputmode="decimal" id="twd" placeholder="Örn: 6500" oninput="this.value = this.value.replace(/\./g, ',')">
+                </div>
+
+                <button class="calc-btn" onclick="hesaplaHP()">HESAPLA</button>
+
+                <div class="result-box">
+                    Hidrostatik Basınç (HP):
+                    <span id="sonuc-metni">0,00 psi</span>
+                </div>
+
+            </div>
+
+            <!-- Ana Menüye Dönüş -->
+            <a href="index.html" style="color: #888888; text-decoration: none; font-size: 14px; display: block; text-align: center; margin-top: 20px; margin-bottom: 40px;">← Ana Menüye Dön</a>
+        </main>
+    </div>
+
+    <script>
+        function hesaplaHP() {
+            let mw = parseFloat(document.getElementById('mw').value.replace(',', '.'));
+            let twd = parseFloat(document.getElementById('twd').value.replace(',', '.'));
+
+            if (isNaN(mw) || isNaN(twd)) {
+                document.getElementById('sonuc-metni').innerText = "Değer Giriniz";
+                return;
+            }
+
+            // Formül: HP (psi) = 0.052 * (MW / 7.48) * TWD
+            let sonuc = 0.052 * (mw / 7.48) * twd;
+
+            // Sonucu virgüllü formatta 2 hane ile gösteriyoruz
+            document.getElementById('sonuc-metni').innerText = sonuc.toFixed(2).replace('.', ',') + " psi";
+        }
+    </script>
+</body>
+</html>
