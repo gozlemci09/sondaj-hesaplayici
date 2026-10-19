@@ -60,7 +60,7 @@
         }
         .add-btn {
             width: 100%;
-            padding: 12px;
+            padding: 14px;
             background-color: #161616;
             color: #4DA8DA;
             border: 1px dashed #4DA8DA;
@@ -70,10 +70,23 @@
             cursor: pointer;
             margin-bottom: 20px;
             font-family: 'Inter', sans-serif;
-            transition: background-color 0.2s;
+            display: block;
         }
         .add-btn:active {
-            background-color: rgba(77, 168, 218, 0.15);
+            background-color: rgba(77, 168, 218, 0.2);
+        }
+        .error-banner {
+            display: none;
+            background-color: rgba(255, 51, 51, 0.15);
+            border: 1px solid #ff4d4d;
+            color: #ff6666;
+            padding: 12px;
+            border-radius: 10px;
+            margin-top: 16px;
+            font-size: 13px;
+            line-height: 1.4;
+            text-align: center;
+            font-weight: 600;
         }
         .detail-row {
             display: flex;
@@ -119,7 +132,7 @@
         <main>
             <!-- Bilgi Kutusu -->
             <div class="info-box">
-                <strong>Bilgi:</strong> Kuyuda birden fazla koruma borusu kademesi (örneğin yüzey/ara casing + Liner) bulunuyorsa, çamurla doğrudan temas eden aktif kademeleri sırasıyla ekleyebilirsiniz. Yüzeye kadar çıkan iç içe borularda çamur yalnızca en içteki boruyla temas eder; askıda kalan (Liner) borularda ise üst kısım bir önceki casing iç çapını, alt kısım Liner iç çapını görür.<br><br>
+                <strong>Bilgi:</strong> Kuyuda birden fazla koruma borusu kademesi (örneğin yüzey/ara casing + Liner) bulunuyorsa, çamurla doğrudan temas eden aktif kademeleri sırasıyla ekleyebilirsiniz.<br><br>
                 <b>Yaygın API Referans İç Çapları (ID):</b><br>
                 • <b>20" Casing (94#):</b> 19,124 inç<br>
                 • <b>13 3/8" Casing (68#):</b> 12,415 inç<br>
@@ -147,42 +160,42 @@
                 
                 <div class="input-group">
                     <label for="td">Mevcut Kuyu Derinliği (TD - metre)</label>
-                    <input type="text" inputmode="decimal" id="td" placeholder="Örn: 2800" oninput="this.value = this.value.replace(/\./g, ',')">
+                    <input type="text" inputmode="decimal" id="td" placeholder="Örn: 2800" oninput="virgulFormatla(this)">
                 </div>
 
                 <!-- Dinamik Casing Listesi -->
                 <div id="casing-list">
-                    <div class="casing-item" data-index="1">
+                    <div class="casing-item">
                         <div class="casing-header">
                             <span class="casing-title">1. Casing Kademesi</span>
                         </div>
                         <div class="grid-3">
                             <div class="input-group" style="margin-bottom: 0;">
                                 <label>Üst (m)</label>
-                                <input type="text" inputmode="decimal" class="csg-top" value="0" placeholder="0" oninput="this.value = this.value.replace(/\./g, ',')">
+                                <input type="text" inputmode="decimal" class="csg-top" value="0" placeholder="0" oninput="virgulFormatla(this)">
                             </div>
                             <div class="input-group" style="margin-bottom: 0;">
                                 <label>Shoe (m)</label>
-                                <input type="text" inputmode="decimal" class="csg-shoe" placeholder="Örn: 1200" oninput="this.value = this.value.replace(/\./g, ',')">
+                                <input type="text" inputmode="decimal" class="csg-shoe" placeholder="Örn: 1200" oninput="virgulFormatla(this)">
                             </div>
                             <div class="input-group" style="margin-bottom: 0;">
                                 <label>İç Çap (inç)</label>
-                                <input type="text" inputmode="decimal" class="csg-id" placeholder="Örn: 12,415" oninput="this.value = this.value.replace(/\./g, ',')">
+                                <input type="text" inputmode="decimal" class="csg-id" placeholder="Örn: 12,415" oninput="virgulFormatla(this)">
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <button type="button" class="add-btn" onclick="casingEkle()">+ YENİ CASING / LINER KADEMESİ EKLE</button>
+                <button type="button" class="add-btn" id="btn-add-casing" onclick="casingEkle()">+ YENİ CASING / LINER KADEMESİ EKLE</button>
 
                 <div class="grid-2">
                     <div class="input-group" style="margin-bottom: 0;">
                         <label for="bit_od">Matkap Çapı (inç)</label>
-                        <input type="text" inputmode="decimal" id="bit_od" placeholder="Örn: 8,5" oninput="this.value = this.value.replace(/\./g, ',')">
+                        <input type="text" inputmode="decimal" id="bit_od" placeholder="Örn: 8,5" oninput="virgulFormatla(this)">
                     </div>
                     <div class="input-group" style="margin-bottom: 0;">
                         <label for="washout">Açık Kuyu Fazlalığı (%)</label>
-                        <input type="text" inputmode="decimal" id="washout" value="0" placeholder="Örn: 0" oninput="this.value = this.value.replace(/\./g, ',')">
+                        <input type="text" inputmode="decimal" id="washout" value="0" placeholder="Örn: 0" oninput="virgulFormatla(this)">
                     </div>
                 </div>
             </div>
@@ -191,11 +204,114 @@
             <div class="card">
                 <span class="section-tag">2. Kuyu İçi Dizi Geometrisi</span>
                 <h2>Sondaj Dizisi (DP & BHA)</h2>
-                <p style="margin-bottom: 16px; font-size: 13px;">BHA uzunluğu girildiğinde, kalan derinlik otomatik olarak Sondaj Borusu (DP) kabul edilir ve her casing kademesiyle kesişimi ayrı hesaplanır.</p>
+                <p style="margin-bottom: 16px; font-size: 13px;">BHA uzunluğu girilmezse tüm dizi DP kabul edilir. DP İç Çapı boş bırakılırsa yalnızca anülüs ve boş kuyu hacimleri hesaplanır.</p>
 
                 <div class="grid-2">
                     <div class="input-group">
                         <label for="dp_od">DP Dış Çapı (inç)</label>
-                        <input type="text" inputmode="decimal" id="dp_od" placeholder="Örn: 5" oninput="this.value = this.value.replace(/\./g, ',')">
+                        <input type="text" inputmode="decimal" id="dp_od" placeholder="Örn: 5" oninput="virgulFormatla(this)">
                     </div>
-                    <div class
+                    <div class="input-group">
+                        <label for="dp_id">DP İç Çapı (inç)</label>
+                        <input type="text" inputmode="decimal" id="dp_id" placeholder="Örn: 4,276" oninput="virgulFormatla(this)">
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="bha_len">BHA (DC / HWDP) Uzunluğu (metre)</label>
+                    <input type="text" inputmode="decimal" id="bha_len" value="0" placeholder="Örn: 180 (Yoksa 0)" oninput="virgulFormatla(this)">
+                </div>
+
+                <div class="grid-2">
+                    <div class="input-group" style="margin-bottom: 0;">
+                        <label for="bha_od">BHA Dış Çapı (inç)</label>
+                        <input type="text" inputmode="decimal" id="bha_od" placeholder="Örn: 6,5" oninput="virgulFormatla(this)">
+                    </div>
+                    <div class="input-group" style="margin-bottom: 0;">
+                        <label for="bha_id">BHA İç Çapı (inç)</label>
+                        <input type="text" inputmode="decimal" id="bha_id" placeholder="Örn: 2,81" oninput="virgulFormatla(this)">
+                    </div>
+                </div>
+
+                <button type="button" class="calc-btn" style="margin-top: 24px;" onclick="hesaplaKuyuHacmi()">KUYU HACMİNİ HESAPLA</button>
+
+                <!-- HATA UYARI KUTUSU -->
+                <div id="error-box" class="error-banner"></div>
+
+                <!-- DETAYLI SONUÇ KUTUSU -->
+                <div class="result-box" id="sonuc-kutusu" style="text-align: left;">
+                    <div style="text-align: center; border-bottom: 1px solid #222; padding-bottom: 14px; margin-bottom: 10px;">
+                        <div style="font-size: 14px; color: #AAAAAA;">Kuyudaki Net Çamur Hacmi (Aktif Kuyu):</div>
+                        <span id="res-net-mud" style="font-size: 30px; color: #4DA8DA; margin-top: 4px;">0,00 bbl</span>
+                    </div>
+
+                    <div class="sub-header">1. Anülüs Hacimleri (Bottoms-Up)</div>
+                    <div id="res-csg-ann-list"></div>
+                    <div class="detail-row">
+                        <span class="detail-label">Toplam Casing Anülüsü:</span>
+                        <span class="detail-val" id="res-csg-ann">0,00 bbl</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label" id="label-oh-ann">Açık Kuyu Anülüsü:</span>
+                        <span class="detail-val" id="res-oh-ann">0,00 bbl</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label" style="color: #E0E0E0; font-weight: 600;">Toplam Anülüs Hacmi:</span>
+                        <span class="detail-val" id="res-tot-ann" style="color: #4DA8DA;">0,00 bbl</span>
+                    </div>
+
+                    <div class="sub-header">2. Sondaj Dizisi Hacimleri</div>
+                    <div class="detail-row">
+                        <span class="detail-label">Dizi İçi Kapasite (DP + BHA):</span>
+                        <span class="detail-val" id="res-str-id">0,00 bbl</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Çelik (Metal) Deplasmanı:</span>
+                        <span class="detail-val" id="res-metal">0,00 bbl</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Kapalı Dizi Deplasmanı:</span>
+                        <span class="detail-val" id="res-closed-str">0,00 bbl</span>
+                    </div>
+
+                    <div class="sub-header">3. Boş Kuyu Hacimleri (Dizi Hariç)</div>
+                    <div id="res-csg-empty-list"></div>
+                    <div class="detail-row">
+                        <span class="detail-label">Toplam Casing Boş Hacim:</span>
+                        <span class="detail-val" id="res-csg-empty">0,00 bbl</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label" id="label-oh-empty">Açık Kuyu Boş Hacim:</span>
+                        <span class="detail-val" id="res-oh-empty">0,00 bbl</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label" style="color: #E0E0E0; font-weight: 600;">Toplam Boş Kuyu Hacmi:</span>
+                        <span class="detail-val" id="res-tot-empty">0,00 bbl</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ana Menüye Dönüş -->
+            <a href="index.html" style="color: #888888; text-decoration: none; font-size: 14px; display: block; text-align: center; margin-top: 20px; margin-bottom: 40px;">← Ana Menüye Dön</a>
+        </main>
+    </div>
+
+    <script>
+        function virgulFormatla(inputEl) {
+            inputEl.value = inputEl.value.replace(/\./g, ',');
+        }
+
+        function parseMetinVirgul(str) {
+            if (!str || str.trim() === "") return NaN;
+            return parseFloat(str.trim().replace(/,/g, '.'));
+        }
+
+        function parseVirgul(id) {
+            var el = document.getElementById(id);
+            if (!el) return NaN;
+            return parseMetinVirgul(el.value);
+        }
+
+        function formatVirgul(num) {
+            if (isNaN(num) || num < 0) num = 0;
+            return num
