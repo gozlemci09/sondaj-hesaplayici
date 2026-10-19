@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Pompa Debisi (gpm) - Sondaj</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Pompa Debisi (gpm)</h1>
+            <p>Dakikada Basılan Akışkan Hacmi</p>
+        </header>
+
+        <main>
+            <!-- Bilgi Kutusu -->
+            <div class="info-box">
+                <strong>Bilgi:</strong> <b>Pompa Debisi (Q - Gallons Per Minute)</b>, çamur pompalarının kuyuya dakikada gönderdiği toplam sondaj akışkanı hacmini ifade eder. Etkili bir kuyu temizliği (anülüs hızı), matkap ucu hidroliği ve kuyu içi ekipmanların (MWD, çamur motoru vb.) çalışma limitleri doğrudan sisteme basılan debiye bağlıdır.
+            </div>
+
+            <!-- Manuel Hesaplama Formül Kutusu -->
+            <div class="formula-box">
+                <strong>Manuel Hesaplama Formülü:</strong>
+                <span class="formula">Q (gpm) = 0,0102 x D² x S x SPM x E</span>
+                <strong>Değişkenler:</strong><br>
+                • <b>D:</b> Gömlek (Liner) Çapı (inç)<br>
+                • <b>S:</b> Liner / Stroke Uzunluğu (inç)<br>
+                • <b>SPM:</b> Toplam Çalışılan Strok (vuruş/dakika)<br>
+                • <b>E:</b> Pompa Verimliliği (Ondalık, örn: %97 için 0,97)<br><br>
+                <strong style="color: #4DA8DA;">💡 Dönüşüm Notu:</strong><br>
+                1 varil (bbl) = 42 ABD galonudur. Tek strokta basılan varil hacmi katsayısı (0,000243) ile 42 çarpılarak formüldeki <b>0,0102</b> sabiti elde edilir.
+            </div>
+
+            <!-- Hesaplama Kartı -->
+            <div class="card">
+                
+                <div class="input-group">
+                    <label for="d">Gömlek (Liner) Çapı (D - inç)</label>
+                    <input type="text" inputmode="decimal" id="d" placeholder="Örn: 6,5" oninput="this.value = this.value.replace(/\./g, ',')">
+                </div>
+
+                <div class="input-group">
+                    <label for="s">Liner / Stroke Uzunluğu (S - inç)</label>
+                    <input type="text" inputmode="decimal" id="s" placeholder="Örn: 12" oninput="this.value = this.value.replace(/\./g, ',')">
+                </div>
+
+                <div class="input-group">
+                    <label for="spm">Toplam Strok Sayısı (SPM - vuruş/dk)</label>
+                    <input type="text" inputmode="decimal" id="spm" placeholder="Örn: 110" oninput="this.value = this.value.replace(/\./g, ',')">
+                </div>
+
+                <div class="input-group">
+                    <label for="e">Pompa Verimliliği (E - %)</label>
+                    <input type="text" inputmode="decimal" id="e" value="97" placeholder="Örn: 97 (Boş bırakılırsa %100 alınır)" oninput="this.value = this.value.replace(/\./g, ',')">
+                </div>
+
+                <button class="calc-btn" onclick="hesaplaDebi()">HESAPLA</button>
+
+                <div class="result-box">
+                    Hesaplanan Pompa Debisi (Q):
+                    <span id="sonuc-metni">0,00 gpm</span>
+                </div>
+
+            </div>
+
+            <!-- Ana Menüye Dönüş -->
+            <a href="index.html" style="color: #888888; text-decoration: none; font-size: 14px; display: block; text-align: center; margin-top: 20px; margin-bottom: 40px;">← Ana Menüye Dön</a>
+        </main>
+    </div>
+
+    <script>
+        function hesaplaDebi() {
+            let d = parseFloat(document.getElementById('d').value.replace(',', '.'));
+            let s = parseFloat(document.getElementById('s').value.replace(',', '.'));
+            let spm = parseFloat(document.getElementById('spm').value.replace(',', '.'));
+            let e_raw = document.getElementById('e').value.trim();
+
+            if (isNaN(d) || isNaN(s) || isNaN(spm)) {
+                document.getElementById('sonuc-metni').innerText = "Değer Giriniz";
+                return;
+            }
+
+            // Verimlilik boş bırakılırsa %100 (1.0) kabul edilir, girilirse yüzdelik orana çevrilir
+            let verim = 1.0;
+            if (e_raw !== "") {
+                let e = parseFloat(e_raw.replace(',', '.'));
+                if (isNaN(e) || e <= 0) {
+                    document.getElementById('sonuc-metni').innerText = "Geçersiz Verim";
+                    return;
+                }
+                verim = (e > 1) ? (e / 100) : e;
+            }
+
+            // Formül: Q (gpm) = 0.0102 x D² x S x SPM x E
+            let sonuc = 0.0102 * (d * d) * s * spm * verim;
+
+            // Sonucu virgüllü formatta 2 hane ile gösteriyoruz
+            document.getElementById('sonuc-metni').innerText = sonuc.toFixed(2).replace('.', ',') + " gpm";
+        }
+    </script>
+</body>
+</html>
