@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Detaylı Kuyu Hacmi - Sondaj</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .section-tag {
+            display: inline-block;
+            background-color: rgba(77, 168, 218, 0.15);
+            color: #4DA8DA;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #1F1F1F;
+            font-size: 14px;
+        }
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+        .detail-label {
+            color: #AAAAAA;
+            text-align: left;
+        }
+        .detail-val {
+            color: #FFFFFF;
+            font-weight: 600;
+            font-size: 15px;
+            display: inline !important;
+            margin-top: 0 !important;
+        }
+        .highlight-val {
+            color: #4DA8DA !important;
+            font-size: 22px !important;
+        }
+        .sub-header {
+            font-size: 13px;
+            font-weight: 600;
+            color: #4DA8DA;
+            text-align: left;
+            margin-top: 16px;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Detaylı Kuyu Hacmi</h1>
+            <p>Section, Anülüs ve Dizi Hacim Analizi</p>
+        </header>
+
+        <main>
+            <!-- Bilgi Kutusu -->
+            <div class="info-box">
+                <strong>Bilgi:</strong> Sondaj kuyuları API standartlarına göre kademeli (section) olarak kazılır ve her faz sonunda koruma borusu (casing) indirilir. Aktif kazım sırasında kuyudaki çamur hacmi; <b>son indirilen casing içi</b>, <b>açık kuyu (open hole)</b> ve <b>sondaj dizisi (DP + BHA)</b> geometrisine göre belirlenir.<br><br>
+                <b>Yaygın API Referans İç Çapları (ID):</b><br>
+                • <b>13 3/8" Casing (68#):</b> 12,415 inç<br>
+                • <b>9 5/8" Casing (47#):</b> 8,681 inç<br>
+                • <b>7" Casing (29#):</b> 6,184 inç<br>
+                • <b>5" Drill Pipe (19.5#):</b> 4,276 inç<br>
+                • <b>3 1/2" Drill Pipe (13.3#):</b> 2,764 inç
+            </div>
+
+            <!-- Manuel Hesaplama Formül Kutusu -->
+            <div class="formula-box">
+                <strong>Manuel Hesaplama Formülleri:</strong>
+                <span class="formula">Birim Kapasite (bbl/ft) = Çap² / 1029,4</span>
+                <span class="formula">Metrik Hacim (bbl) = (Çap² / 1029,4) x Derinlik(m) x 3,28084</span>
+                <span class="formula">Anülüs Hacmi (bbl) = [(D₂² - D₁²) / 1029,4] x L(m) x 3,28084</span>
+                <strong>Değişkenler ve Sabitler:</strong><br>
+                • <b>D₂:</b> Kuyu veya Casing İç Çapı (inç)<br>
+                • <b>D₁:</b> Dizi (DP veya DC) Dış Çapı (inç)<br>
+                • <b>1 Metre =</b> 3,28084 Feet (Pratik metrik katsayı: <b>0,003187 x Çap² x Metre</b>)
+            </div>
+
+            <!-- 1. KART: KUYU VE CASING DİZAYNI -->
+            <div class="card">
+                <span class="section-tag">1. Kuyu & Casing Geometrisi</span>
+                <h2>Kuyu ve Casing Verileri</h2>
+                
+                <div class="input-group">
+                    <label for="td">Mevcut Kuyu Derinliği (TD - metre)</label>
+                    <input type="text" inputmode="decimal" id="td" placeholder="Örn: 2500" oninput="this.value = this.value.replace(/\./g, ',')">
+                </div>
+
+                <div class="grid-2">
+                    <div class="input-group">
+                        <label for="csg_shoe">Casing Shoe (m)</label>
+                        <input type="text" inputmode="decimal" id="csg_shoe" placeholder="Örn: 1800" oninput="this.value = this.value.replace(/\./g, ',')">
+                    </div>
+                    <div class="input-group">
+                        <label for="csg_id">Casing İç Çapı (inç)</label>
+                        <input type="text" inputmode="decimal" id="csg_id" placeholder="Örn: 8,681" oninput="this.value = this.value.replace(/\./g, ',')">
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="input-group" style="margin-bottom: 0;">
+                        <label for="bit_od">Matkap Çapı (inç)</label>
+                        <input type="text" inputmode="decimal" id="bit_od" placeholder="Örn: 8,5" oninput="this.value = this.value.replace(/\./g, ',')">
+                    </div>
+                    <div class="input-group" style="margin-bottom: 0;">
+                        <label for="washout">Açık Kuyu Fazlalığı (%)</label>
+                        <input type="text" inputmode="decimal" id="washout" value="0" placeholder="Örn: 0" oninput="this.value = this.value.replace(/\./g, ',')">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. KART: SONDAJ DİZİSİ (DP & BHA) -->
+            <div class="card">
+                <span class="section-tag">2. Kuyu İçi Dizi Geometrisi</span>
+                <h2>Sondaj Dizisi (DP & BHA)</h2>
+                <p style="margin-bottom: 16px; font-size: 13px;">BHA uzunluğu girildiğinde, kalan derinlik otomatik olarak Sondaj Borusu (DP) kabul edilir.</p>
+
+                <div class="grid-2">
+                    <div class="input-group">
+                        <label for="dp_od">DP Dış Çapı (inç)</label>
+                        <input type="text" inputmode="decimal" id="dp_od" placeholder="Örn: 5" oninput="this.value = this.value.replace(/\./g, ',')">
+                    </div>
+                    <div class="input-group">
+                        <label for="dp_id">DP İç Çapı (inç)</label>
+                        <input type="text" inputmode="decimal" id="dp_id" placeholder="Örn: 4,276" oninput="this.value = this.value.replace(/\./g, ',')">
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label for="bha_len">BHA (DC / HWDP) Uzunluğu (metre)</label>
+                    <input type="text" inputmode="decimal" id="bha_len" value="0" placeholder="Örn: 180 (Yoksa 0)" oninput="this.value = this.value.replace(/\./g, ',')">
+                </div>
+
+                <div class="grid-2">
+                    <div class="input-group" style="margin-bottom: 0;">
+                        <label for="bha_od">BHA Dış Çapı (inç)</label>
+                        <input type="text" inputmode="decimal" id="bha_od" placeholder="Örn: 6,5" oninput="this.value = this.value.replace(/\./g, ',')">
+                    </div>
+                    <div class="input-group" style="margin-bottom: 0;">
+                        <label for="bha_id">BHA İç Çapı (inç)</label>
+                        <input type="text" inputmode="decimal" id="bha_id" placeholder="Örn: 2,81" oninput="this.value = this.value.replace(/\./g, ',')">
+                    </div>
+                </div>
+
+                <button class="calc-btn" style="margin-top: 24px;" onclick="hesaplaKuyuHacmi()">KUYU HACMİNİ HESAPLA</button>
+
+                <!-- DETAYLI SONUÇ KUTUSU -->
+                <div class="result-box" id="sonuc-kutusu" style="text-align: left;">
+                    <div style="text-align: center; border-bottom: 1px solid #222; padding-bottom: 14px; margin-bottom: 10px;">
+                        <div style="font-size: 14px; color: #AAAAAA;">Kuyudaki Net Çamur Hacmi (Aktif Kuyu):</div>
+                        <span id="res-net-mud" style="font-size: 30px; color: #4DA8DA; margin-top: 4px;">0,00 bbl</span>
+                    </div>
+
+                    <div class="sub-header">1. Anülüs Hacimleri (Bottoms-Up)</div>
+                    <div class="detail-row">
+                        <span class="detail-label">Açık Kuyu Anülüsü:</span>
+                        <span class="detail-val" id="res-oh-ann">0,00 bbl</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Casing Anülüsü:</span>
+                        <span class="detail-val" id="res-csg-ann">0,00 bbl</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label" style="color: #E0E0E0; font-weight: 600;">Toplam Anülüs Hacmi:</span>
+                        <span class="detail-val" id="res-tot-ann" style="color: #4DA8DA;">0,00 bbl</span>
+                    </div>
+
+                    <div class="sub-header">2. Sondaj Dizisi Hacimleri</div>
+                    <div class="detail-row">
+                        <span class="detail-label">Dizi İçi Kapasite (DP + BHA):</span>
+                        <span class="detail-val" id="res-str-id">0,00 bbl</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Çelik (Metal) Deplasmanı:</span>
+                        <span class="detail-val" id="res-metal">0,00 bbl</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Kapalı Dizi Deplasmanı:</span>
+                        <span class="detail-val" id="res-closed-str">0,00 bbl</span>
+                    </div>
+
+                    <div class="sub-header">3. Boş Kuyu Hacimleri (Dizi Hariç)</div>
+                    <div class="detail-row">
+                        <span class="detail-label">Casing İçi Boş Hacim:</span>
+                        <span class="detail-val" id="res-csg-empty">0,00 bbl</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Açık Kuyu Boş Hacim:</span>
+                        <span class="detail-val" id="res-oh-empty">0,00 bbl</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label" style="color: #E0E0E0; font-weight: 600;">Toplam Boş Kuyu Hacmi:</span>
+                        <span class="detail-val" id="res-tot-empty">0,00 bbl</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ana Menüye Dönüş -->
+            <a href="index.html" style="color: #888888; text-decoration: none; font-size: 14px; display: block; text-align: center; margin-top: 20px; margin-bottom: 40px;">← Ana Menüye Dön</a>
+        </main>
+    </div>
+
+    <script>
+        function parseVirgul(id) {
+            let val = document.getElementById(id).value.trim();
+            if (val === "") return NaN;
+            return parseFloat(val.replace(',', '.'));
+        }
+
+        function formatVirgul(num) {
+            return num.toFixed(2).replace('.', ',') + " bbl";
+        }
+
+        // Çap (inç) ve Uzunluk (metre) değerlerinden bbl hacim hesaplayan yardımcı fonksiyon
+        function bblHesapla(cap_inc, uzunluk_metre) {
+            const M_TO_FT = 3.28084;
+            return ((cap_inc * cap_inc) / 1029.4) * uzunluk_metre * M_TO_FT;
+        }
+
+        function hesaplaKuyuHacmi() {
+            let td = parseVirgul('td');
+            let csg_shoe = parseVirgul('csg_shoe');
+            let csg_id = parseVirgul('csg_id');
+            let bit_od = parseVirgul('bit_od');
+            let washout = parseVirgul('washout');
+
+            let dp_od = parseVirgul('dp_od');
+            let dp_id = parseVirgul('dp_id');
+            let bha_len = parseVirgul('bha_len');
+            let bha_od = parseVirgul('bha_od');
+            let bha_id = parseVirgul('bha_id');
+
+            // Varsayılan sıfır kontrolleri
+            if (isNaN(csg_shoe)) csg_shoe = 0;
+            if (isNaN(washout)) washout = 0;
+            if (isNaN(bha_len)) bha_len = 0;
+
+            // Temel zorunlu alan kontrolleri
+            if (isNaN(td) || td <= 0) {
+                alert("Lütfen geçerli bir Mevcut Kuyu Derinliği (TD) giriniz.");
+                return;
+            }
+            if (csg_shoe > td) {
+                alert("Hata: Casing Shoe derinliği, mevcut kuyu derinliğinden (TD) büyük olamaz!");
+                return;
+            }
+            if (csg_shoe > 0 && (isNaN(csg_id) || csg_id <= 0)) {
+                alert("Lütfen Casing İç Çapı (ID) değerini giriniz.");
+                return;
+            }
+
+            let oh_len = td - csg_shoe; // Açık kuyu uzunluğu (metre)
+            if (oh_len > 0 && (isNaN(bit_od) || bit_od <= 0)) {
+                alert("Lütfen Matkap / Açık Kuyu Çapı değerini giriniz.");
+                return;
+            }
+
+            if (isNaN(dp_od) || isNaN(dp_id) || dp_od <= 0 || dp_id <= 0) {
+                alert("Lütfen Sondaj Borusu (DP) dış ve iç çaplarını giriniz.");
+                return;
+            }
+            if (dp_id >= dp_od) {
+                alert("Hata: DP İç Çapı, DP Dış Çapından küçük olmalıdır!");
+                return;
+            }
+
+            if (bha_len > td) {
+                alert("Hata: BHA uzunluğu, mevcut kuyu derinliğinden (TD) büyük olamaz!");
+                return;
+            }
+            if (bha_len > 0) {
+                if (isNaN(bha_od) || isNaN(bha_id) || bha_od <= 0 || bha_id <= 0) {
+                    alert("BHA uzunluğu girdiniz. Lütfen BHA Dış ve İç Çaplarını da giriniz.");
+                    return;
+                }
+                if (bha_id >= bha_od) {
+                    alert("Hata: BHA İç Çapı, BHA Dış Çapından küçük olmalıdır!");
+                    return;
+                }
+            } else {
+                bha_od = 0;
+                bha_id = 0;
+            }
+
+            let dp_len = td - bha_len; // Sondaj borusu uzunluğu (metre)
+
+            // Çap kontrolleri (Dizi kuyu içine sığıyor mu?)
+            if (csg_shoe > 0 && (dp_od >= csg_id || (bha_len > oh_len && bha_od >= csg_id))) {
+                alert("Hata: Dizi dış çapı, Casing iç çapından büyük veya eşit olamaz!");
+                return;
+            }
+            if (oh_len > 0 && (dp_od >= bit_od || (bha_len > 0 && bha_od >= bit_od))) {
+                alert("Hata: Dizi dış çapı, Matkap çapından büyük veya eşit olamaz!");
+                return;
+            }
+
+            // 1. BOŞ KUYU HACİMLERİ
+            let csg_empty_vol = (csg_shoe > 0) ? bblHesapla(csg_id, csg_shoe) : 0;
+            let oh_base_vol = (oh_len > 0) ? bblHesapla(bit_od, oh_len) : 0;
+            let oh_empty_vol = oh_base_vol * (1 + (washout / 100)); // Fazla kazım (washout) dahil
+            let tot_empty_vol = csg_empty_vol + oh_empty_vol;
+
+            // 2. SONDAJ DİZİSİ HACİMLERİ (DP + BHA)
+            let dp_id_vol = bblHesapla(dp_id, dp_len);
+            let bha_id_vol = (bha_len > 0) ? bblHesapla(bha_id, bha_len) : 0;
+            let str_id_vol = dp_id_vol + bha_id_vol; // Toplam Dizi İçi
+
+            let dp_closed_vol = bblHesapla(dp_od, dp_len);
+            let bha_closed_vol = (bha_len > 0) ? bblHesapla(bha_od, bha_len) : 0;
+            let closed_str_vol = dp_closed_vol + bha_closed_vol; // Kapalı Dizi Deplasmanı
+
+            let metal_vol = closed_str_vol - str_id_vol; // Net Çelik (Metal) Deplasmanı
+
+            // 3. ANÜLÜS HACİMLERİ (BHA ve DP'nin Açık Kuyu / Casing dağılımı)
+            // BHA kuyu tabanından yukarı doğru uzanır:
+            let bha_in_oh = Math.min(bha_len, oh_len);
+            let dp_in_oh = oh_len - bha_in_oh;
+
+            let bha_in_csg = bha_len - bha_in_oh;
+            let dp_in_csg = csg_shoe - bha_in_csg;
+
+            // Açık kuyu içindeki dizinin dış hacmi
+            let str_disp_in_oh = bblHesapla(bha_od, bha_in_oh) + bblHesapla(dp_od, dp_in_oh);
+            // Casing içindeki dizinin dış hacmi
+            let str_disp_in_csg = bblHesapla(bha_od, bha_in_csg) + bblHesapla(dp_od, dp_in_csg);
+
+            let oh_ann_vol = oh_empty_vol - str_disp_in_oh;
+            let csg_ann_vol = csg_empty_vol - str_disp_in_csg;
+            let tot_ann_vol = oh_ann_vol + csg_ann_vol;
+
+            // 4. KUYUDAKİ NET AKTİF ÇAMUR HACMİ (Dizi İçi + Toplam Anülüs)
+            let net_mud_vol = str_id_vol + tot_ann_vol;
+
+            // SONUÇLARI EKRANA YAZDIR
+            document.getElementById('res-net-mud').innerText = formatVirgul(net_mud_vol);
+            document.getElementById('res-oh-ann').innerText = formatVirgul(oh_ann_vol);
+            document.getElementById('res-csg-ann').innerText = formatVirgul(csg_ann_vol);
+            document.getElementById('res-tot-ann').innerText = formatVirgul(tot_ann_vol);
+
+            document.getElementById('res-str-id').innerText = formatVirgul(str_id_vol);
+            document.getElementById('res-metal').innerText = formatVirgul(metal_vol);
+            document.getElementById('res-closed-str').innerText = formatVirgul(closed_str_vol);
+
+            document.getElementById('res-csg-empty').innerText = formatVirgul(csg_empty_vol);
+            document.getElementById('res-oh-empty').innerText = formatVirgul(oh_empty_vol);
+            document.getElementById('res-tot-empty').innerText = formatVirgul(tot_empty_vol);
+
+            document.getElementById('sonuc-kutusu').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    </script>
+</body>
+</html>
